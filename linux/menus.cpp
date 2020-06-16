@@ -49,7 +49,7 @@ Menus::~Menus() {
 }
 
 void Menus::show_menu(void) {
-
+	puts("");
 	for (int i = 0; i < MENU_LINES; i++) {
 		cout << this->menu[i] << endl;
 	}

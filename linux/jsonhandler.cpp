@@ -27,12 +27,12 @@ void loadSchema(const char *schema, char *output) {
 	fp = fopen(schema, "r");
 
 	if (fp == NULL) {
-		printf("Could not use %s", schema);
+		printf("Could not open %s", schema);
 		exit(EXIT_FAILURE);
 	}
 
 	else if (fp < 0) {
-		printf("Could not use %s", schema);
+		printf("Could not open %s", schema);
 		exit(EXIT_FAILURE);
 	}
 
@@ -171,7 +171,7 @@ int serialize(char *schema, char *method, int param) {
 
 	strncpy(schema, output, BUFLEN);
 
-	printf("Sending: %s\n", output);
+	//printf("generated string: %s\n", output);
 
 	return 0;
 }

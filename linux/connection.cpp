@@ -23,7 +23,7 @@
 const char EndOfFile = 0x04; 				// Ctrl + D
 const char DONT_UNDERSTAND[] = "Sorry I don't understand that command\n";
 
-#define SERVER_IP "192.168.6.2"
+#define SERVER_IP "192.168.1.6"
 #define SERVER_PORT 1955
 using namespace std;
 void *ConThread (void *p)
