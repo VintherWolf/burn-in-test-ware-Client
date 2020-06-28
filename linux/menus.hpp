@@ -20,7 +20,8 @@ enum en_sub_menu1
 	setPWM = 1,
 	setRelay = 2,
 	getRelay = 3,
-	getTemp = 4
+	getTemp = 4,
+	setRAMerror = 5
 };
 
 using namespace std;

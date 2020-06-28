@@ -162,7 +162,7 @@ int valReq(const char *schema)
 	return check;
 }
 
-int serialize(char *schema, char *method, int param)
+int serialize(char *schema, const char *method, int param)
 {
 	Document rpcdoc;
 
@@ -206,7 +206,7 @@ int serialize(char *schema, char *method, int param)
 	else
 	{
 		rpcdoc["method"].SetString("");
-		puts("FEJL");
+		puts("Typed invalid method!");
 		return -1;
 	}
 

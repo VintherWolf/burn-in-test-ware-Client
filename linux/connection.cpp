@@ -3,6 +3,7 @@
  *
  *  Created on: Mar 5, 2012
  *      Author: klausk
+ *      Edited by: Daniel K. Vinther Wolf (June-2020)
  */
 
 #include <stdio.h>
@@ -22,13 +23,13 @@
 const char EndOfFile = 0x04; // Ctrl + D
 const char DONT_UNDERSTAND[] = "Sorry I don't understand that command\n";
 
-#define SERVER_IP "192.168.1.6"
+#define SERVER_IP "192.168.6.2"
 #define SERVER_PORT 1955
 using namespace std;
 void *ConThread(void *p)
 {
 	// TCP IP Setup:
-	puts("Creating Connection thread");conn
+	puts("Creating Connection thread");
 	int sockfd = -1;
 	struct sockaddr_in servAddr;
 	char servIP[] = SERVER_IP;
@@ -79,10 +80,3 @@ void *ConThread(void *p)
 
 	return NULL;
 }
-
-
-pthread_t tid;
-		if (pthread_create (&tid, NULL, ConThread, &newsockfd) != 0)
-		{
-			perror ("An error occurred while starting new connection thread.");
-		}
