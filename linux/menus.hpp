@@ -12,6 +12,7 @@ enum en_main_menu
 	add_error = '3',
 	clear_log = '4',
 	send_req = '9',
+	info = 'i',
 	quit = 'q'
 };
 
@@ -24,6 +25,12 @@ enum en_sub_menu1
 	setRAMerror = 5
 };
 
+enum en_sub_menu2
+{
+	setAddress= 1,
+	cancel = 2,
+};
+
 using namespace std;
 
 class Menus
@@ -33,6 +40,9 @@ public:
 	string *menu = new string[MENU_LINES];
 	char input;
 	int input_method;
+	int input_address_info;
+	char * servIP;
+	unsigned short servPort;
 
 	/* Methods */
 	Menus(void);
@@ -41,6 +51,7 @@ public:
 	//private:
 	void show_menu(void);
 	int user_input(void);
+	bool isValidIpAddress(char *st);
 };
 
 #endif

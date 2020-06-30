@@ -4,21 +4,18 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 CPP_SRCS += \
-../linux/client.cpp \
 ../linux/connection.cpp \
 ../linux/jsonhandler.cpp \
 ../linux/main.cpp \
 ../linux/menus.cpp 
 
 OBJS += \
-./linux/client.o \
 ./linux/connection.o \
 ./linux/jsonhandler.o \
 ./linux/main.o \
 ./linux/menus.o 
 
 CPP_DEPS += \
-./linux/client.d \
 ./linux/connection.d \
 ./linux/jsonhandler.d \
 ./linux/main.d \

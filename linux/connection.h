@@ -8,7 +8,14 @@
 #ifndef CONNECTION_H_
 #define CONNECTION_H_
 
-void *ConThread(void *p);
+struct conParams {
+	const char * schema;
+	const char * servIP;
+	unsigned short servPort;
+};
+
+
+void *ConThread(void *args);
 
 
 #endif /* CONNECTION_H_ */

@@ -19,26 +19,25 @@
 #include <iostream>
 
 #include "jsonhandler.h"
+#include "connection.h"
 
 const char EndOfFile = 0x04; // Ctrl + D
 const char DONT_UNDERSTAND[] = "Sorry I don't understand that command\n";
 
-#define SERVER_IP "192.168.6.2"
-#define SERVER_PORT 1955
 using namespace std;
-void *ConThread(void *p)
+void *ConThread(void *args)
 {
+	struct conParams *params = (struct conParams*)args;
+
 	// TCP IP Setup:
 	puts("Creating Connection thread");
 	int sockfd = -1;
 	struct sockaddr_in servAddr;
-	char servIP[] = SERVER_IP;
-	unsigned short servPort = SERVER_PORT;
 
 	memset(&servAddr, 0, sizeof(servAddr));
 	servAddr.sin_family = AF_INET;
-	servAddr.sin_addr.s_addr = inet_addr(servIP);
-	servAddr.sin_port = htons(servPort);
+	servAddr.sin_addr.s_addr = inet_addr(params->servIP);
+	servAddr.sin_port = htons(params->servPort);
 
 	// Buffers
 	const int buflen = 256;
@@ -60,8 +59,8 @@ void *ConThread(void *p)
 		return NULL;
 	}
 
-	mesgLen = strlen((char *)p);
-	if (send(sockfd, (char *)p, mesgLen, 0) != mesgLen)
+	mesgLen = strlen(params->schema);
+	if (send(sockfd, params->schema, mesgLen, 0) != mesgLen)
 	{
 		puts("Send failed!");
 		close(sockfd);

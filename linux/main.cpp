@@ -10,29 +10,34 @@
 #include <ctype.h>
 #include <unistd.h>
 
-#include "client.h"
+
 #include "menus.hpp"
 #include "jsonhandler.h"
 #include "connection.h"
 
 using namespace std;
-	/*
-Test test;
 
-test.a = 0;
-test.b = 1;
-*/
 
 int main(int argC, char **argV)
 {
 	pthread_t tid;
 
-	char usr_input;
+	volatile char usr_input;
 	extern char sendSchema[256];
-		Menus main_menu;
 
+	struct conParams * readParams;
+
+	readParams = (struct conParams*)malloc(sizeof(*readParams));
+	//readParams->schema = sendSchema;
+	readParams->schema = sendSchema;
+	readParams->servIP = "192.168.0.27";
+	readParams->servPort = 1955;
+
+
+	Menus main_menu;
 
 	main_menu.show_menu();
+
 	while ((usr_input = main_menu.user_input()) != quit)
 	{
 
@@ -43,17 +48,17 @@ int main(int argC, char **argV)
 		if ((valReq(sendSchema) > 5099 || usr_input == getRelay) && usr_input != quit)
 		{
 
-			if (pthread_create(&tid, NULL, ConThread, (void *)sendSchema) != 0)
+			if (pthread_create(&tid, NULL, ConThread, readParams) != 0)
 			{
 				perror("An error occurred while starting new connection thread.");
 			}
 		}
 		// Just wait a bit. ConThread may write to stdout
-		usleep(10000);
+		usleep(100000);
 		main_menu.show_menu();
 	}
 
 	cout << "Quitting!" << endl;
-
+	free(readParams);
 	return EXIT_SUCCESS;
 }
