@@ -27,7 +27,7 @@ const char DONT_UNDERSTAND[] = "Sorry I don't understand that command\n";
 using namespace std;
 void *ConThread(void *args)
 {
-	struct conParams *params = (struct conParams*)args;
+	struct conParams *params = (struct conParams *)args;
 
 	// TCP IP Setup:
 	puts("Creating Connection thread");

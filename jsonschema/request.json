@@ -1,0 +1,9 @@
+{
+    "jsonrpc": "2.0",
+    "method": "<method>",
+    "params": [
+        "<param1>",
+        "<param2>"
+    ],
+    "id": 0
+}

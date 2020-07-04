@@ -7,8 +7,9 @@
 
 #include <iostream>
 #include <string>
-#include "menus.hpp"
 #include <new>
+
+#include "menus.hpp"
 #include "jsonhandler.h"
 #include "connection.h"
 
@@ -22,50 +23,58 @@ char sendSchema[256];
 using namespace rapidjson;
 using namespace std;
 
-Menus::Menus() {
+Menus::Menus()
+{
+	extern char default_ip[16];
 	this->input = 0;
 	this->input_method = 0;
 	this->input_address_info = 0;
-	this->servIP = "192.162.0.27";
+	this->servIP = default_ip;
 	this->servPort = 1955;
 
-	for (int i = 0; i < MENU_LINES; i++) {
-		this->menu[i] = { " " };
+	for (int i = 0; i < MENU_LINES; i++)
+	{
+		this->menu[i] = {" "};
 	}
 
-	this->menu[0] = { "Select:" };
-	this->menu[1] = { "1 Load Schema" };
-	this->menu[2] = { "2 Methods" };
-	this->menu[3] = { " " };
-	this->menu[4] = { " " };
-	this->menu[5] = { "i Info" };
-	this->menu[6] = { "q quit" };
+	this->menu[0] = {"Select:"};
+	this->menu[1] = {"1 Load Schema"};
+	this->menu[2] = {"2 Methods"};
+	this->menu[3] = {" "};
+	this->menu[4] = {" "};
+	this->menu[5] = {"i Info"};
+	this->menu[6] = {"q quit"};
 }
 
-Menus::~Menus() {
+Menus::~Menus()
+{
 	delete[] menu;
 }
 
-void Menus::show_menu(void) {
+void Menus::show_menu(void)
+{
 	puts("");
-	for (int i = 0; i < MENU_LINES; i++) {
+	for (int i = 0; i < MENU_LINES; i++)
+	{
 		cout << this->menu[i] << endl;
 	}
 }
 
-int Menus::user_input(void) {
+int Menus::user_input(void)
+{
 	const char *methodsMenu =
-			"Select: 1 setPWM, 2 setRelay, 3 getRelay, 4 getTemp"
-					" 5 setRAMerror ";
+		"Select: 1 setPWM, 2 setRelay, 3 getRelay, 4 getTemp"
+		" 5 setRAMerror ";
 	cin >> input;
 	char *schema;
-	schema = (char*) malloc(256 * sizeof(char));
+	schema = (char *)malloc(256 * sizeof(char));
 	const char *infoMenu = "\nSelect: \n1 set IP Address and Port \n"
-			"2 cancel";
+						   "2 cancel";
 	int pwmLevel = 0;
 	int chk = 0;
 
-	switch (input) {
+	switch (input)
+	{
 
 	case (load_schema):
 		cout << "loadSchema" << endl;
@@ -77,7 +86,8 @@ int Menus::user_input(void) {
 		cout << methodsMenu << endl;
 		cin >> input_method;
 
-		switch (input_method) {
+		switch (input_method)
+		{
 		case (setPWM):
 			cout << "Set PWM level (0-100%)" << endl;
 			cin >> pwmLevel;
@@ -105,11 +115,13 @@ int Menus::user_input(void) {
 		}
 		break;
 	case (add_error):
-		cout << "add_error\n" << endl;
+		cout << "add_error\n"
+			 << endl;
 		break;
 
 	case (clear_log):
-		cout << "clear_log\n" << endl;
+		cout << "clear_log\n"
+			 << endl;
 		break;
 
 	case (send_req):
@@ -120,37 +132,45 @@ int Menus::user_input(void) {
 		cout << "Current info: " << this->servIP << " " << this->servPort << endl;
 		cout << infoMenu << endl;
 		cin >> input_address_info;
-		switch (input_address_info) {
+		switch (input_address_info)
+		{
 
 		case (setAddress):
 			puts("\nEnter IP-address or q to cancel:");
-			char * ip_addr;
-			ip_addr = (char*) malloc(16 * sizeof(char));
+			char *ip_addr;
+			ip_addr = (char *)malloc(16 * sizeof(char));
+			ip_addr = this->servIP;
 
 			unsigned short port;
-			cin >> ip_addr;
-			puts(ip_addr);
-			if (strcmp(ip_addr, "q") == 0)
+			cin >> this->servIP;
+			puts(this->servIP);
+			if (strcmp(this->servIP, "q") == 0)
 				return 0;
 
-			if (!isValidIpAddress(ip_addr))
+			if (!isValidIpAddress(this->servIP))
 			{
-				printf("Invalid IP address! (%s)\n", ip_addr);
-			}
-			else {
+				printf("Invalid IP address! (%s)\n", this->servIP);
 				this->servIP = ip_addr;
 			}
-			puts("Enter port:");
-			cin >> port;
-			this->servPort = port;
-			free(ip_addr);
+			else
+			{
+				puts("Enter port:");
+				cin >> port;
+
+				if (isdigit(port))
+					this->servPort = port;
+				else
+					puts("Port must be af number");
+			}
+
 			break;
 
 		case (cancel):
-				return 0;
-				break;
+			return 0;
+			break;
 		default:
-			cout << "Invalid Option\n" << endl;
+			cout << "Invalid Option\n"
+				 << endl;
 			return 0;
 			break;
 		}
@@ -163,16 +183,19 @@ int Menus::user_input(void) {
 		break;
 
 	default:
-		cout << "Invalid Option\n" << endl;
+		cout << "Invalid Option\n"
+			 << endl;
 		return 0;
 		break;
 	}
 
 	free(schema);
+	free(ip_addr);
 	return EXIT_SUCCESS;
 }
 
-bool Menus::isValidIpAddress(char *st) {
+bool Menus::isValidIpAddress(char *st)
+{
 	int num, i, len;
 	char *ch;
 
@@ -189,7 +212,8 @@ bool Menus::isValidIpAddress(char *st) {
 
 	ch = strtok(st, ".");
 
-	while (ch != NULL) {
+	while (ch != NULL)
+	{
 		quadsCnt++;
 		printf("Quald %d is %s\n", quadsCnt, ch);
 
@@ -197,20 +221,23 @@ bool Menus::isValidIpAddress(char *st) {
 		i = 0;
 
 		//  Get the current token and convert to an integer value
-		while (ch[i] != '\0') {
+		while (ch[i] != '\0')
+		{
 			num = num * 10;
 			num = num + (ch[i] - '0');
 			i++;
 		}
 
-		if (num < 0 || num > 255) {
+		if (num < 0 || num > 255)
+		{
 			printf("Not a valid ip\n");
 			return false;
 		}
 
-		if ((quadsCnt == 1 && num == 0) || (quadsCnt == 4 && num == 0)) {
+		if ((quadsCnt == 1 && num == 0) || (quadsCnt == 4 && num == 0))
+		{
 			printf("Not a valid ip, quad: %d AND/OR quad:%d is zero\n",
-					quadsCnt, quadsCnt);
+				   quadsCnt, quadsCnt);
 			return false;
 		}
 
@@ -218,11 +245,11 @@ bool Menus::isValidIpAddress(char *st) {
 	}
 
 	//  Check the address string, should be n.n.n.n format
-	if (quadsCnt != 4) {
+	if (quadsCnt != 4)
+	{
 		return false;
 	}
 
 	//  Looks like a valid IP address
 	return true;
 }
-

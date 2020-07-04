@@ -1,0 +1,27 @@
+version: '3.7'
+
+services:
+  server:
+    build: .
+    container_name: server_burn-in-app
+    restart: unless-stopped
+    volumes:
+      - c:/docker_log:/usr/logfiles
+    ports:
+      - 1955:1955
+    command: ["tail -f /dev/null"]
+    #command: ["/bin/bash"]
+
+  client:
+    container_name: client_burn-in-app
+    build: .
+    restart: unless-stopped
+    volumes:
+      - client_data:/usr/logfiles
+    ports:
+      - 1956:1956
+    command: ["tail -f /dev/null"]
+    #command: ["/bin/bash"]
+
+volumes: 
+  client_data:

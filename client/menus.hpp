@@ -27,7 +27,7 @@ enum en_sub_menu1
 
 enum en_sub_menu2
 {
-	setAddress= 1,
+	setAddress = 1,
 	cancel = 2,
 };
 
@@ -41,7 +41,7 @@ public:
 	char input;
 	int input_method;
 	int input_address_info;
-	char * servIP;
+	char *servIP;
 	unsigned short servPort;
 
 	/* Methods */
