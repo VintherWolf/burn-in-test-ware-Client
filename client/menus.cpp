@@ -26,7 +26,7 @@ using namespace std;
 
 Menus::Menus()
 {
-	this->servIP = {"127.0.0.1"};
+	this->servIP = {"0.0.0.0"};
 	this->servPort = 1955;
 
 	for (int i = 0; i < MENU_LINES; i++)
@@ -85,7 +85,7 @@ int Menus::main_menu(void)
 
 	case (quit):
 
-			return quit;
+		return quit;
 		break;
 
 	default:

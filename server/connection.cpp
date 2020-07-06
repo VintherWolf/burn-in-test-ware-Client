@@ -19,20 +19,18 @@
 #include <signal.h>
 
 #include "jsonhandler.h"
-
+#include "settings.h"
 using namespace std;
 
-#define RESP_SCHEMA "/usr/bbb-projekter/response.json"
-
 const char GETTEMP[] = "GET TEMP";
-const int lenGetTemp = strlen (GETTEMP);
-const char EndOfFile = 0x04; 				// Ctrl + D
+const int lenGetTemp = strlen(GETTEMP);
+const char EndOfFile = 0x04; // Ctrl + D
 const char DONT_UNDERSTAND[] = "Sorry I don't understand that command, or ID is greater than 10\n";
 
 // From the readtemp module
 extern float curTemp;
 
-void *ConThread (void *p)
+void *ConThread(void *p)
 {
 	int sockfd;
 	const int buflen = 128;
@@ -41,41 +39,41 @@ void *ConThread (void *p)
 	int n;
 
 	char *respSchema;
-	respSchema = (char*) malloc(256 * sizeof(char));
+	respSchema = (char *)malloc(256 * sizeof(char));
 	loadSchema(RESP_SCHEMA, respSchema);
 
 	int req = 0;
 	int id = -1;
 
 	// Grab a copy of the socket fd
-	sockfd = *(int *) p;
+	sockfd = *(int *)p;
 
-	syslog (LOG_NOTICE,
-	        "ConThread started conversation with client on socketfd: %d.",
-	        sockfd);
+	syslog(LOG_NOTICE,
+		   "ConThread started conversation with client on socketfd: %d.",
+		   sockfd);
 
-	memset (recBuffer, 0, buflen);
+	memset(recBuffer, 0, buflen);
 
 	// Continuously read from the socket and echo it until the socket dies out
-	n = recv (sockfd, recBuffer, buflen, 0);
+	n = recv(sockfd, recBuffer, buflen, 0);
 	if (n < 0)
 	{
-		syslog (LOG_NOTICE, "Failed to recv. n = %d", n);
+		syslog(LOG_NOTICE, "Failed to recv. n = %d", n);
 		return NULL;
 	}
 	while (n > 0)
 	{
-		syslog (LOG_NOTICE, "Got this from client: \"%s\" length: %d.", recBuffer, n);
+		syslog(LOG_NOTICE, "Got this from client: \"%s\" length: %d.", recBuffer, n);
 
 		// Special Case GET TEMP request
-		if (strncmp (recBuffer, GETTEMP, lenGetTemp) == 0)
+		if (strncmp(recBuffer, GETTEMP, lenGetTemp) == 0)
 		{
 			// Echo back the temperature
-			memset (wrtBuffer, 0, buflen);
-			sprintf (wrtBuffer, "%f\n", curTemp);
-			if (write (sockfd, wrtBuffer, strlen (wrtBuffer)) < 0)
+			memset(wrtBuffer, 0, buflen);
+			sprintf(wrtBuffer, "%f\n", curTemp);
+			if (write(sockfd, wrtBuffer, strlen(wrtBuffer)) < 0)
 			{
-				syslog (LOG_NOTICE, "Failed to write to port");
+				syslog(LOG_NOTICE, "Failed to write to port");
 				return NULL;
 			}
 		}
@@ -83,7 +81,7 @@ void *ConThread (void *p)
 		else if (recBuffer[0] == EndOfFile)
 		{
 			n = 0;
-			syslog (LOG_NOTICE, "EndOfFile received. Goodbye!");
+			syslog(LOG_NOTICE, "EndOfFile received. Goodbye!");
 			continue;
 		}
 
@@ -96,33 +94,34 @@ void *ConThread (void *p)
 
 			// Echo back the response schema if no errors
 			/* TODO Implement error handling in accordance with RPC 2.0 */
-			memset (wrtBuffer, 0, buflen);
-			sprintf (wrtBuffer, "%s", respSchema);
+			memset(wrtBuffer, 0, buflen);
+			sprintf(wrtBuffer, "%s", respSchema);
+			printf("Sending to client: %s\n", respSchema);
 			syslog(LOG_NOTICE, "Sending to client: %s\n", respSchema);
-			if (write (sockfd, wrtBuffer, strlen(wrtBuffer)) < 0)
+			if (write(sockfd, wrtBuffer, strlen(wrtBuffer)) < 0)
 			{
-				syslog (LOG_NOTICE, "Failed to write to port");
+				syslog(LOG_NOTICE, "Failed to write to port");
 				return NULL;
 			}
 		}
 
 		else
 		{
-			if (write (sockfd, DONT_UNDERSTAND, strlen (DONT_UNDERSTAND)) < 0)
+			if (write(sockfd, DONT_UNDERSTAND, strlen(DONT_UNDERSTAND)) < 0)
 			{
-				syslog (LOG_NOTICE, "Failed to write DONT_UNDERSTAND to port");
+				syslog(LOG_NOTICE, "Failed to write DONT_UNDERSTAND to port");
 				return NULL;
 			}
 		}
-		memset (recBuffer, 0, buflen);
+		memset(recBuffer, 0, buflen);
 		// Read again
-		n = recv (sockfd, recBuffer, buflen, 0);
+		n = recv(sockfd, recBuffer, buflen, 0);
 	}
 	// Clean up before leaving the room
 
-	close (sockfd);
+	close(sockfd);
 	free(respSchema);
-	syslog (LOG_NOTICE,
-	        "Exited the Communications thread. Still listening for new connections.");
+	syslog(LOG_NOTICE,
+		   "Exited the Communications thread. Still listening for new connections.");
 	return NULL;
 }

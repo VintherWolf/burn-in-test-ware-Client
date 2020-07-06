@@ -31,7 +31,7 @@ int main(int argC, char **argV, char **envP)
 
 	char ip_addr[16];
 	strncpy(ip_addr, main_menu.servIP.c_str(), 16);
-	// Default IP and Port (127.0.0.1 1955)
+	// Default IP and Port (0.0.0.0 1955)
 	readParams = (struct conParams *)malloc(sizeof(*readParams));
 	readParams->schema = sendSchema;
 	readParams->servIP = ip_addr;

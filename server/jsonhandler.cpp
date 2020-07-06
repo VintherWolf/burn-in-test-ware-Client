@@ -16,6 +16,7 @@
 
 #include "PWM.h"
 #include "log.h"
+#include "settings.h"
 
 #define BUFLEN 256
 
@@ -26,7 +27,7 @@ using namespace rapidjson;
 using namespace std;
 using namespace exploringBB;
 
-char *newError = NULL;
+char newError[256];
 
 void loadSchema(const char *schema, char *output)
 {
@@ -264,12 +265,14 @@ void startPWM(void)
 int handleReq(const char *str_schema)
 {
 
+#if BEAGLEBONE_BLACK
 	PWM pwm(PWM_P9_42);
 
 	pwm.setFrequency(100);
 	pwm.setDutyCycle(5.0f);
 	pwm.setPolarity(PWM::ACTIVE_HIGH);
 	pwm.run();
+#endif
 
 	Document rpcdoc;
 	rpcdoc.Parse(str_schema);
@@ -292,8 +295,11 @@ int handleReq(const char *str_schema)
 		case (1):
 			// method = setPWM
 			params = rpcdoc["params"].GetInt();
+#if BEAGLEBONE_BLACK
 			pwm.setDutyCycle((float)params);
+#endif
 			printf("setPWM to %d\n", params);
+
 			break;
 		case (2):
 			// method = setRelay
@@ -306,9 +312,11 @@ int handleReq(const char *str_schema)
 			printf("getRelay %d\n", params);
 			break;
 		case (4):
-			// method = getTemp
+// method = getTemp
+#if BEAGLEBONE_BLACK
 			extern float curTemp;
 			params = (int)curTemp;
+#endif
 			printf("getTemp %d\n", params);
 			break;
 

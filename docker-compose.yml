@@ -8,7 +8,8 @@ services:
     volumes:
       - C:/docker_log:/usr/logfiles
     ports:
-      - 1955:1955
+      - "1955:1955"
+      - "2222:22"
     command: ["tail -f /dev/null"]
     #command: ["/bin/bash"]
 
@@ -19,6 +20,6 @@ services:
     volumes:
       - C:/docker_log:/usr/logfiles
     ports:
-      - 1956:1956
+      - "1956:1956"
     command: ["tail -f /dev/null"]
     #command: ["/bin/bash"]

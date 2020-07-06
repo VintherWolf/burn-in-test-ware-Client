@@ -22,7 +22,8 @@
 #include "log.h"
 #include "jsonhandler.h"
 #include "PWM.h"
-
+#include "settings.h"
+/*
 #define BEAGLEBONE_BLACK 0
 #define DOCKERIZED_UBUNTU 1
 
@@ -39,10 +40,16 @@
 
 #define REQ_SCHEMA "/usr/bbb-projekter/request.json"
 #define RESP_SCHEMA "/usr/bbb-projekter/response.json"
+#endif
 
+#if DOCKERIZED_UBUNTU
+
+#define REQ_SCHEMA "../jsonschema/request.json"
+#define RESP_SCHEMA "../jsonschema/response.json"
 #endif
 
 #define LOGFILE "logfile.log"
+*/
 // Global handle for the TCP Server and thermometer threads
 pthread_t tid;
 pthread_t rid;
@@ -56,7 +63,7 @@ int main()
 	setlogmask(LOG_UPTO(LOG_NOTICE));
 
 	// Error Message from JSON handler.cpp
-	extern char *newError;
+	extern char newError[256];
 	extern char log_filename[64];
 	openlog("readtemp", LOG_CONS | LOG_PID | LOG_NDELAY, LOG_LOCAL1);
 	// Find the log-entries in /var/log/messages (tail -f)
@@ -112,14 +119,14 @@ int main()
 
 #if DOCKERIZED_UBUNTU
 	unsigned log_entries = 1;
-
+	strncpy(newError, "empty", 256);
 	for (;;)
 	{
 		makeLogEntries(log_filename, 25.0f);
-		if (newError != NULL)
+		if (strncmp(newError, "empty", 256) != 0)
 		{
 			makeLogEntries(log_filename, newError);
-			newError = NULL;
+			strncpy(newError, "empty", 256);
 		}
 		printf("Made log entry in %s (log entry = %u)\n", log_filename, log_entries);
 		sleep(15);
