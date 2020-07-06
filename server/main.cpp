@@ -57,7 +57,7 @@ int main()
 
 	// Error Message from JSON handler.cpp
 	extern char *newError;
-
+	extern char log_filename[64];
 	openlog("readtemp", LOG_CONS | LOG_PID | LOG_NDELAY, LOG_LOCAL1);
 	// Find the log-entries in /var/log/messages (tail -f)
 
@@ -87,6 +87,7 @@ int main()
 	{
 		syslog(LOG_NOTICE,
 			   "An error occurred when starting main listener thread.");
+		puts("Failed creating listener!");
 	}
 	syslog(LOG_NOTICE,
 		   "The TCP listener thread started successfully. Awaiting your call.");
@@ -110,16 +111,19 @@ int main()
 #endif
 
 #if DOCKERIZED_UBUNTU
+	unsigned log_entries = 1;
+
 	for (;;)
 	{
-		makeLogEntries(LOGFILE, 25.0f);
+		makeLogEntries(log_filename, 25.0f);
 		if (newError != NULL)
 		{
-			makeLogEntries(LOGFILE, newError);
+			makeLogEntries(log_filename, newError);
 			newError = NULL;
 		}
-		puts("Made log entry in /usr/logfiles/logfil");
+		printf("Made log entry in %s (log entry = %u)\n", log_filename, log_entries);
 		sleep(15);
+		log_entries++;
 	}
 
 #endif

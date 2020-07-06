@@ -20,6 +20,7 @@
 // Timestamp
 #define TIMEFORMAT "YYYY-MM-DDTHH:MM:SSZ"
 #define ISO_TIMEFORMAT "%Y-%m-%dT%H:%M:%S"
+#define LOGFILE_FORMAT "%Y-%m-%d-%H-%M-%S"
 // Text
 #define WARNING_MESG " High Temperature Warning"
 #define ERROR_MESG " High Temperature Error"
@@ -35,12 +36,40 @@
 #define LOW_TEMP 45
 #define WARN_TEMP 55
 
+char log_filename[64];
+
+void genTimestamp(char *timestamp, int buflen)
+{
+
+	// Generate Timestamp for log entry
+	time_t rawTimestamp;
+
+	time(&rawTimestamp);
+
+	strftime(timestamp, buflen, ISO_TIMEFORMAT,
+			 gmtime(&rawTimestamp));
+	strncat(timestamp, ".000Z", buflen);
+}
+
 void initLog(const char *logfile)
 {
 
-	char log[32];
+	char timestamp[sizeof TIMEFORMAT];
+
+	char log[BUFLEN];
 	strncpy(log, logfile, 32);
 
+	// Generate logfile name based on timestamp
+	// Generate Timestamp for log entry
+	time_t rawTimestamp;
+
+	time(&rawTimestamp);
+
+	strftime(timestamp, BUFLEN, LOGFILE_FORMAT, gmtime(&rawTimestamp));
+
+	strncpy(log_filename, timestamp, 64 - 1);
+	strncat(log_filename, "_", 64 - 1);
+	strncat(log_filename, log, 64 - 1);
 	FILE *fp;
 
 	if (!mkdir(LOGFILES_DIR, 0777))
@@ -62,7 +91,7 @@ void initLog(const char *logfile)
 		exit(EXIT_FAILURE);
 	}
 
-	fp = fopen(log, "w");
+	fp = fopen(log_filename, "w");
 
 	if (fp == NULL)
 	{
@@ -88,19 +117,6 @@ void concatLogfile(char *ts, const char *txt, const char *st, char *logEntry)
 	strncat(buf, txt, BUFLEN - 1);
 	strncat(buf, st, BUFLEN - 1);
 	strncpy(logEntry, buf, BUFLEN - 1);
-}
-
-void genTimestamp(char *timestamp, int buflen)
-{
-
-	// Generate Timestamp for log entry
-	time_t rawTimestamp;
-
-	time(&rawTimestamp);
-
-	strftime(timestamp, buflen, ISO_TIMEFORMAT,
-			 gmtime(&rawTimestamp));
-	strncat(timestamp, ".000Z", buflen);
 }
 
 void makeLogEntries(const char *logfile, char *errorText)

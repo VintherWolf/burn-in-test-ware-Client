@@ -38,20 +38,21 @@ class Menus
 public:
 	/* Vars */
 	string *menu = new string[MENU_LINES];
-	char input;
-	int input_method;
-	int input_address_info;
-	char *servIP;
+	string servIP;
 	unsigned short servPort;
 
 	/* Methods */
 	Menus(void);
 	~Menus(void);
 
-	//private:
-	void show_menu(void);
-	int user_input(void);
+	void sub_methods(void);
+	void sub_info(void);
+	int main_menu(void);
+
 	bool isValidIpAddress(char *st);
+
+private:
+	void show_main_menu(void);
 };
 
 #endif

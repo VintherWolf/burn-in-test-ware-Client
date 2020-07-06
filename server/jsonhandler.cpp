@@ -315,13 +315,14 @@ int handleReq(const char *str_schema)
 		case (5):
 			// method = setRAMerror
 			printf("setRAMerror\n");
-			newError = " RAM Test Fail#Ssram Ctrl#RxTx Ctrl";
+			strncpy(newError, " RAM Test Fail#Ssram Ctrl#RxTx Ctrl", 64);
+
 			break;
 
 		case (6):
 			// method = setBootMark
 			printf("setBootMark\n");
-			newError = " ** Hardware Initialization **";
+			strncpy(newError, " ** Hardware Initialization **", 64);
 			break;
 
 		default:

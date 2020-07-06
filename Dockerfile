@@ -9,8 +9,8 @@ RUN apt-get update && apt-get install -y \
 COPY . /burn-in-app
 
 # Build app
-RUN make ./burn-in-app/client/.
-RUN make ./burn-in-app/server/.
+RUN cd ./burn-in-app/client/ && make
+RUN cd ./burn-in-app/server/ && make
 
 RUN mkdir ./usr/logfiles
 
